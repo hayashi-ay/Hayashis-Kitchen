@@ -1,0 +1,6 @@
+flask
+flask-restx
+gunicorn
+# the version of werkzeug is temporarily fixed to 0.16.1 because falsk-restx hasn't supported the latest version yet
+# https://github.com/python-restx/flask-restx/issues/37
+werkzeug<=0.16.1
