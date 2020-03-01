@@ -1,10 +1,18 @@
 from flask import Flask
 from flask_restx import Resource, Api
+from models import db, setup_db, db_drop_and_create_all
 
 app = Flask(__name__)
+setup_db(app)
 api = Api(app, version='1.0', title='Hayashi\'s Kitchen',
 	description='This is a kind of a reservation management system for my dinning table.',
 )
+
+'''
+db_drop_and_create_all() will drop all existing records and create your db from scratch,
+so the below code must be uncommented on the first run.
+'''
+# db_drop_and_create_all()
 
 slot = api.namespace('Slot', description='Slot')
 reserve = api.namespace('Reserve', description='Reserve')
