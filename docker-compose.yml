@@ -5,7 +5,7 @@ services:
     build: ./backend
     image: kitchen/backend:1.0
     volumes:
-      - "./backend/app.py:/app/app.py"
+      - "./backend/:/app/"
     ports:
       - "8081:8080"
     depends_on:
