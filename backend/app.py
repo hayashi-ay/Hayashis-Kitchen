@@ -24,6 +24,12 @@ slot_resource_fields = api.model('Slot', {
 		'capacity': fields.Integer,
 	})
 
+reserve_resource_fields = api.model('Reserve', {
+		'id': fields.Integer,
+		'slot_id': fields.Integer,
+		'user_id': fields.Integer,
+	})
+
 user_resource_fields = api.model('User', {
 		'id': fields.Integer,
 		'name': fields.String,
@@ -70,8 +76,25 @@ class ReserveResource(Resource):
 	def patch(self):
 		return {'method': 'post'}
 
+	@user.doc(body=reserve_resource_fields)
 	def put(self):
-		return {'method': 'put'}
+		body = request.get_json()
+
+		slot_id = body['slot_id']
+		user_id = body['user_id']
+
+		try:
+			reservation = Reservation()
+			reservation.slot_id = slot_id
+			reservation.user_id = user_id
+
+			db.session.add(reservation)
+			db.session.commit()
+		except:
+			db.session.rollback()
+			abort(422, "unprocessable")
+
+		return jsonify( { "success": True, "id": reservation.id } )
 
 @user.route('/users')
 class UserResource(Resource):
