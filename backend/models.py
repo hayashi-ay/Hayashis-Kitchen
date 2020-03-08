@@ -33,6 +33,6 @@ class User(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, nullable=False)
-	access_id = db.Column(db.String, unique=True, nullable=False)
+	auth0_user_id = db.Column(db.String, unique=True, nullable=False)
 
 	reservation = db.relationship('Reservation')
