@@ -32,7 +32,7 @@ class SlotResource(Resource):
 	def get(self):
 		return {'get': 'slot'}
 
-	def post(self):
+	def patch(self):
 		return {'method': 'post'}
 
 	def put(self):
@@ -43,7 +43,7 @@ class SlotResource(Resource):
 
 @reserve.route('/reserve')
 class ReserveResource(Resource):
-	def post(self):
+	def patch(self):
 		return {'method': 'post'}
 
 	def put(self):
