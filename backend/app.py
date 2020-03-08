@@ -1,6 +1,6 @@
-from flask import Flask
-from flask_restx import Resource, Api
-from models import db, setup_db, db_drop_and_create_all
+from flask import Flask, request, jsonify, abort
+from flask_restx import Resource, Api, fields
+from models import db, setup_db, db_drop_and_create_all, Slot, Reservation, User
 
 app = Flask(__name__)
 setup_db(app)
@@ -17,6 +17,12 @@ so the below code must be uncommented on the first run.
 slot = api.namespace('Slot', description='Slot')
 reserve = api.namespace('Reserve', description='Reserve')
 user = api.namespace('User', description='User')
+
+user_resource_fields = api.model('User', {
+		'id': fields.Integer,
+		'name': fields.String,
+		'auth0_user_id': fields.String,
+	})
 
 @slot.route('/slots')
 class SlotResource(Resource):
@@ -48,8 +54,29 @@ class UserResource(Resource):
 	def get(self):
 		return {'get': 'slot'}
 
+	@user.doc(body=user_resource_fields)
 	def put(self):
-		return {'method': 'put'}
+		body = request.get_json()
+
+		auth0_user_id = body['auth0_user_id']
+		name = body['name']
+
+		user = User.query.filter_by(auth0_user_id=auth0_user_id).one_or_none()
+
+		if user is None:
+			try:
+				user = User()
+
+				user.auth0_user_id = auth0_user_id
+				user.name = name
+
+				db.session.add(user)
+				db.session.commit()
+			except:
+				db.session.rollback()
+				abort(422, "unprocessable")
+
+		return jsonify( { "success": True, "id": user.id } )
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port=8080,debug=True)
