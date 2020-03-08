@@ -18,6 +18,12 @@ slot = api.namespace('Slot', description='Slot')
 reserve = api.namespace('Reserve', description='Reserve')
 user = api.namespace('User', description='User')
 
+slot_resource_fields = api.model('Slot', {
+		'id': fields.Integer,
+		'start_time': fields.DateTime,
+		'capacity': fields.Integer,
+	})
+
 user_resource_fields = api.model('User', {
 		'id': fields.Integer,
 		'name': fields.String,
@@ -35,8 +41,26 @@ class SlotResource(Resource):
 	def patch(self):
 		return {'method': 'post'}
 
+	@user.doc(body=slot_resource_fields)
 	def put(self):
-		return {'method': 'put'}
+		body = request.get_json()
+
+		start_time = body['start_time']
+		capacity = body['capacity']
+
+		try:
+			slot = Slot()
+
+			slot.start_time = start_time
+			slot.capacity = capacity
+
+			db.session.add(slot)
+			db.session.commit()
+		except:
+			db.session.rollback()
+			abort(422, "unprocessable")
+
+		return jsonify( { "success": True, "id": slot.id } )
 
 	def delete(self):
 		return {'method': 'delete'}
