@@ -19,7 +19,7 @@ reserve = api.namespace('Reserve', description='Reserve')
 user = api.namespace('User', description='User')
 
 @slot.route('/slots')
-class Slot(Resource):
+class SlotResource(Resource):
 	@slot.response(404, 'Resoure Not Found')
 	@slot.response(500, 'Something went wrong')
 	@slot.param('id', 'id of slot')
@@ -36,7 +36,7 @@ class Slot(Resource):
 		return {'method': 'delete'}
 
 @reserve.route('/reserve')
-class Reserve(Resource):
+class ReserveResource(Resource):
 	def post(self):
 		return {'method': 'post'}
 
@@ -44,7 +44,7 @@ class Reserve(Resource):
 		return {'method': 'put'}
 
 @user.route('/users')
-class User(Resource):
+class UserResource(Resource):
 	def get(self):
 		return {'get': 'slot'}
 
