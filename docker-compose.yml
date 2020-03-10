@@ -11,6 +11,11 @@ services:
     depends_on:
       - db
     restart: always
+  frontend:
+    build: ./frontend
+    image: kitchen/frontend:1.0
+    ports:
+      - "3001:8080"
   db:
     image: postgres:12.2-alpine
     ports:
