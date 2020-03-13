@@ -107,9 +107,6 @@ class SlotResource(Resource):
 
 @reserve.route('/reserve')
 class ReserveResource(Resource):
-	def patch(self):
-		return {'method': 'post'}
-
 	@user.doc(body=reserve_resource_fields)
 	def put(self):
 		body = request.get_json()
