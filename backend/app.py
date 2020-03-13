@@ -132,8 +132,17 @@ class ReserveResource(Resource):
 
 @user.route('/users')
 class UserResource(Resource):
+	@slot.param('id', 'id of user')
 	def get(self):
-		return {'get': 'slot'}
+		sql = User.query
+
+		id = request.args.get('id', None, type=int)
+		if id:
+			sql = sql.filter_by(id=id)
+
+		users = list(map(lambda x: x.to_dict(), sql.all() ) )
+
+		return jsonify( { "success": True, "users": users } )
 
 	@user.doc(body=user_resource_fields)
 	def put(self):

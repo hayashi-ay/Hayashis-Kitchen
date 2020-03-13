@@ -47,3 +47,9 @@ class User(db.Model):
 	auth0_user_id = db.Column(db.String, unique=True, nullable=False)
 
 	reservation = db.relationship('Reservation')
+
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+		}
