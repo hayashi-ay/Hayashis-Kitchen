@@ -45,8 +45,28 @@ class SlotResource(Resource):
 	@slot.response(404, 'Resoure Not Found')
 	@slot.response(500, 'Something went wrong')
 	@slot.param('id', 'id of slot')
+	@slot.param('user_id', 'retrieve slots with reverved by the user')
+	@slot.param('search_start_date', 'start date of searching')
+	@slot.param('search_end_date', 'end date of searching')
 	def get(self):
-		slots = list(map(lambda x: x.to_dict(), Slot.query.all() ) )
+		sql = Slot.query
+
+		user_id = request.args.get('user_id', None, type=int)
+		if user_id:
+			sql = sql.join(Reservation, Slot.id==Reservation.slot_id).filter( Reservation.user_id == user_id )
+
+		id = request.args.get('id', None, type=int)
+		if id:
+			sql = sql.filter_by(id=id)
+
+		search_start_date = request.args.get('search_start_date', None, type=str)
+		search_end_date = request.args.get('search_end_date', None, type=str)
+		if search_start_date:
+			sql = sql.filter(Slot.start_time >= search_start_date)
+		if search_end_date:
+			sql = sql.filter(Slot.start_time <= search_end_date)
+
+		slots = list(map(lambda x: x.to_dict(), sql.all() ) )
 		'''
 		TODO: 'TypeError: Object of type Response is not JSON serializable' is raised,
 		when response status code is explicitly passed to the return object:
