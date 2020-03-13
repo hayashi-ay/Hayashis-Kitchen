@@ -16,6 +16,8 @@ class Slot(db.Model):
 	__tablename__ = 'slots'
 
 	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String, nullable=False)
+	description = db.Column(db.String, nullable=False)
 	start_time = db.Column(db.DateTime, nullable=False)
 	capacity = db.Column(db.Integer, nullable=False)
 

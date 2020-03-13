@@ -20,6 +20,8 @@ user = api.namespace('User', description='User')
 
 slot_resource_fields = api.model('Slot', {
 		'id': fields.Integer,
+		'title': fields.String,
+		'description': fields.String,
 		'start_time': fields.DateTime,
 		'capacity': fields.Integer,
 	})
@@ -51,12 +53,16 @@ class SlotResource(Resource):
 	def put(self):
 		body = request.get_json()
 
+		title = body['title']
+		description = body['description']
 		start_time = body['start_time']
 		capacity = body['capacity']
 
 		try:
 			slot = Slot()
 
+			slot.title = title
+			slot.description = description
 			slot.start_time = start_time
 			slot.capacity = capacity
 
