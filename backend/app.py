@@ -46,7 +46,13 @@ class SlotResource(Resource):
 	@slot.response(500, 'Something went wrong')
 	@slot.param('id', 'id of slot')
 	def get(self):
-		return {'get': 'slot'}
+		slots = list(map(lambda x: x.to_dict(), Slot.query.all() ) )
+		'''
+		TODO: 'TypeError: Object of type Response is not JSON serializable' is raised,
+		when response status code is explicitly passed to the return object:
+		return jsonify( {"success": True, "slots": slots} ), 200
+		'''
+		return jsonify( {"success": True, "slots": slots} )
 
 	def patch(self):
 		return {'method': 'post'}

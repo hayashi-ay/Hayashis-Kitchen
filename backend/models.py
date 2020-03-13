@@ -23,6 +23,15 @@ class Slot(db.Model):
 
 	reservation = db.relationship('Reservation')
 
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'title': self.title,
+			'description': self.description,
+			'start_time': self.start_time,
+			'capacity': self.capacity
+		}
+
 class Reservation(db.Model):
 	__tablename__ = 'reservations'
 
