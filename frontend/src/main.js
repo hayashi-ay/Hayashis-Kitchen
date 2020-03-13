@@ -14,7 +14,8 @@ Vue.use(Auth0Plugin, {
         ? appState.targetUrl
         : window.location.pathname
     );
-  }
+  },
+  redirectUri: `${window.location.origin}/dashboard`
 });
 
 Vue.config.productionTip = false
