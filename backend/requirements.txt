@@ -1,6 +1,7 @@
 flask
 flask-sqlalchemy
 flask-restx
+flask-cors
 gunicorn
 # `pip install psycopg2` fails because it requires OpenSSL, so I used `psycopg2-binary` instead
 psycopg2-binary

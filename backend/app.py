@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify, abort
 from flask_restx import Resource, Api, fields
+from flask_cors import CORS
 from models import db, setup_db, db_drop_and_create_all, Slot, Reservation, User
 
 app = Flask(__name__)
 setup_db(app)
+CORS(app)
 api = Api(app, version='1.0', title='Hayashi\'s Kitchen',
 	description='This is a kind of a reservation management system for my dinning table.',
 )
