@@ -29,54 +29,40 @@
 </template>
 
 <script>
+import axios from "axios";
 
 export default {
   name: 'Dashboard',
   data() {
     return {
-      upcomings: [
-        {
-          'id': 1,
-          'title': 'Yakiniku',
-          'description': 'go to yakiniku',
-          'start_time': '2020-03-10',
-          'capacity': 5,
-          'reserved': 2,
-        },
-        {
-          'id': 2,
-          'title': 'Dinner',
-          'description': 'dinner',
-          'start_time': '2020-03-12',
-          'capacity': 1,
-          'reserved': 0,
-        }
-      ],
-      bookings: [
-        {
-        'id': 1,
-        'title': 'Yakiniku',
-        'description': 'go to yakiniku',
-        'start_time': '2020-03-10',
-        'capacity': 5,
-        'reserved': 2,
-      },
-      {
-        'id': 2,
-        'title': 'Dinner',
-        'description': 'dinner',
-        'start_time': '2020-03-12',
-        'capacity': 1,
-        'reserved': 0,
-      }
-    ],
+      upcomings: [],
+      bookings: [],
     }
   },
   components: {
   },
   methods: {
+    async init() {
+      // fetch slots that an user booked
+      let { data } = await axios.get( 'http://localhost:8081/Slot/slots', {
+        params: {
+          // TODO: replace the actual user_id of logged in user
+          'user_id': 1,
+        }
+      } );
+      this.bookings = data.slots;
+
+      ( { data } = await axios.get( 'http://localhost:8081/Slot/slots', {
+        params: {
+          // TODO: replace the actual date of today
+          'search_start_date': '2020-03-11'
+        }
+      } ) );
+      this.upcomings = data.slots;
+    },
   },
   created() {
+    this.init();
   }
 }
 </script>
