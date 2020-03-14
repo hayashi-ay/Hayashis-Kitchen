@@ -2,12 +2,24 @@ from flask import Flask, request, jsonify, abort, render_template
 from flask_restx import Resource, Api, fields
 from flask_cors import CORS
 from models import db, setup_db, db_drop_and_create_all, Slot, Reservation, User
+from auth import requires_auth
 
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
+
+authorizations = {
+	'oauth2': {
+		'type': 'oauth2',
+		'flow': 'implicit',
+		'authorizationUrl': 'https://hayashi-ay.auth0.com/authorize?audience=hayashis_kitchen',
+		'scopes': {},
+	}
+}
+
 api = Api(app, version='1.0', title='Hayashi\'s Kitchen',
 	description='This is a kind of a reservation management system for my dinning table.',
+	authorizations=authorizations,
 )
 
 '''
@@ -79,7 +91,9 @@ class SlotResource(Resource):
 		return jsonify( {"success": True, "slots": slots} )
 
 	@user.doc(body=slot_resource_fields)
-	def patch(self):
+	@api.doc(security=[{'oauth2': ['patch:slots']}])
+	@requires_auth('patch:slots')
+	def patch(self, jwt):
 		body = request.get_json()
 
 		slot_id = body['id']
@@ -110,7 +124,9 @@ class SlotResource(Resource):
 		return jsonify( { "success": True, "slots": [ slot.to_dict() ] } )
 
 	@user.doc(body=slot_resource_fields)
-	def put(self):
+	@api.doc(security=[{'oauth2': ['put:slots']}])
+	@requires_auth('put:slots')
+	def put(self, jwt):
 		body = request.get_json()
 
 		title = body['title']
@@ -135,7 +151,9 @@ class SlotResource(Resource):
 		return jsonify( { "success": True, "id": slot.id } )
 
 	@slot.doc(params={'id': 'An ID of slot'})
-	def delete(self):
+	@api.doc(security=[{'oauth2': ['delete:slots']}])
+	@requires_auth('delete:slots')
+	def delete(self, jwt):
 		slot_id = request.args.get('id', None, type=int)
 		if id is None:
 			abort(404, "resource not found")
