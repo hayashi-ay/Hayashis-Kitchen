@@ -74,8 +74,36 @@ class SlotResource(Resource):
 		'''
 		return jsonify( {"success": True, "slots": slots} )
 
+	@user.doc(body=slot_resource_fields)
 	def patch(self):
-		return {'method': 'post'}
+		body = request.get_json()
+
+		slot_id = body['id']
+		if slot_id is None:
+			abort(404, "resource not found")
+
+		slot = Slot.query.filter_by(id=slot_id).one_or_none()
+		if slot is None:
+			abort(404, "resource not found")
+
+		if 'title' in body:
+			slot.title = body['title']
+
+		if 'description' in body:
+			slot.description = body['description']
+
+		if 'start_time' in body:
+			slot.start_time = body['start_time']
+
+		if 'capacity' in body:
+			slot.capacity = body['capacity']
+
+		try:
+			db.session.add(slot)
+			db.session.commit()
+		except:
+			abort(422, "unprocessable")
+		return jsonify( { "success": True, "slots": [ slot.to_dict() ] } )
 
 	@user.doc(body=slot_resource_fields)
 	def put(self):
