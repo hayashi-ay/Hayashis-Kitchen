@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
 from flask_restx import Resource, Api, fields
 from flask_cors import CORS
 from models import db, setup_db, db_drop_and_create_all, Slot, Reservation, User
@@ -39,6 +39,10 @@ user_resource_fields = api.model('User', {
 		'name': fields.String,
 		'auth0_user_id': fields.String,
 	})
+
+@app.route('/oauth2-redirect.html')
+def render_html():
+	return render_template('oauth2-redirect.html')
 
 @slot.route('/slots')
 class SlotResource(Resource):
