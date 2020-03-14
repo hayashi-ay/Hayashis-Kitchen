@@ -130,8 +130,23 @@ class SlotResource(Resource):
 
 		return jsonify( { "success": True, "id": slot.id } )
 
+	@slot.doc(params={'id': 'An ID of slot'})
 	def delete(self):
-		return {'method': 'delete'}
+		slot_id = request.args.get('id', None, type=int)
+		if id is None:
+			abort(404, "resource not found")
+
+		slot = Slot.query.filter_by(id=slot_id).one_or_none()
+		if slot is None:
+			abort(404, "resource not found")
+
+		try:
+			db.session.delete(slot)
+			db.session.commit()
+		except:
+			db.session.rollback()
+			abort(422, "unprocessable")
+		return jsonify( { "success": True, "delete": slot_id } )
 
 @reserve.route('/reserve')
 class ReserveResource(Resource):
