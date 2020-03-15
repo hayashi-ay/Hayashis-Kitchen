@@ -3,6 +3,7 @@ from flask_restx import Resource, Api, fields
 from flask_cors import CORS
 from models import db, setup_db, db_drop_and_create_all, Slot, Reservation, User
 from auth import requires_auth
+import os
 
 app = Flask(__name__)
 setup_db(app)
@@ -231,4 +232,5 @@ class UserResource(Resource):
 		return jsonify( { "success": True, "id": user.id } )
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=8080,debug=True)
+	port = int(os.environ.get('PORT', 8080))
+	app.run(host='0.0.0.0',port=port,debug=True)
