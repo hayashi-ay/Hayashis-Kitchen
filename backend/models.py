@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask.cli import with_appcontext
+import click
 import os
 
 db = SQLAlchemy()
@@ -9,6 +11,8 @@ def setup_db(app):
 	db.app = app
 	db.init_app(app)
 
+@click.command(name='db_drop_and_create_all')
+@with_appcontext
 def db_drop_and_create_all():
 	db.drop_all()
 	db.create_all()

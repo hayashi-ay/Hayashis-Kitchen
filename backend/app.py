@@ -9,6 +9,8 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
+app.cli.add_command(db_drop_and_create_all)
+
 authorizations = {
 	'oauth2': {
 		'type': 'oauth2',
